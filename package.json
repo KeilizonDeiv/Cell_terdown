@@ -1,0 +1,28 @@
+{
+  "name": "cell-teardown",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive 3D teardown of lithium-ion battery cells with power analytics. Three.js + Vite, deployed on Cloudflare Workers static assets.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm test && npm run build",
+    "cf:dev": "npm run build && wrangler dev",
+    "deploy": "npm run check && wrangler deploy"
+  },
+  "dependencies": {
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0",
+    "vitest": "^5.0.3",
+    "wrangler": "^4.30.0"
+  }
+}
