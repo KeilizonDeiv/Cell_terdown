@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cell Teardown</title>
+  <meta name="description" content="Interactive 3D teardown of lithium-ion battery cells (4680 cylinder, LFP prismatic, NMC pouch) with power analytics.">
+  <meta name="theme-color" content="#0c1114">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+<canvas id="stage" aria-label="3D model of the selected battery cell. Drag to turn it."></canvas>
+<div class="shade"></div>
+<svg id="overlay" aria-hidden="true"><line id="leader" opacity="0"></line><g id="dims" opacity="0"></g></svg>
+<div id="hotspot" aria-hidden="true"><span class="ring"></span><span class="tag"></span></div>
+<div id="tip" role="status" hidden></div>
+
+<header class="topbar">
+  <span><b>Cell</b> <span class="brand-sub">/ teardown</span></span>
+  <nav class="seg" id="typePick" aria-label="Battery type"></nav>
+  <span class="meter"><span id="meterLabel">Assembled</span><i id="meter"></i></span>
+</header>
+
+<!-- Story sections are rendered from js/data/cells.js for the selected cell type. -->
+<main id="story">
+  <section class="step hero" data-step="hero">
+    <div class="card">
+      <p class="eyebrow">Cylindrical lithium-ion cell · 46 × 80 mm</p>
+      <h1>46<span>80</span></h1>
+      <p class="tag">The big round cell inside modern electric cars</p>
+    </div>
+  </section>
+</main>
+
+<section class="analytics" data-step="analytics" id="analytics">
+  <div class="an-head">
+    <div>
+      <p class="eyebrow">Power analytics</p>
+      <h2>How much power each cell gives</h2>
+      <p>Pick a cell to highlight it everywhere on the page, including the 3D model. Hover or tap a chart for exact values.</p>
+    </div>
+    <div class="seg" id="anPick" aria-label="Highlight cell type"></div>
+  </div>
+
+  <div class="an-grid">
+    <article class="panel">
+      <h3>Cell vs. cell</h3>
+      <p>Bigger cells hold more energy each. The fairer test is energy per kilogram and per liter, where the lightweight pouch leads per kilogram, the tightly wound 4680 leads per liter, and LFP trades density for long life.</p>
+      <div class="cmp">
+        <div class="chart" id="cmpEnergy"></div>
+        <div class="chart" id="cmpMass"></div>
+        <div class="chart" id="cmpGrav"></div>
+        <div class="chart" id="cmpVol"></div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h3>Discharge curve</h3>
+      <p>Voltage drops as a cell empties. NMC slopes down steadily; LFP holds a flat ~3.3 V almost to the end, which is why its charge level is harder to read from voltage alone.</p>
+      <div class="chart" id="curveChart"></div>
+      <p class="note">Typical curve shapes at a moderate load. Real curves shift with temperature, age and current.</p>
+    </article>
+
+    <article class="panel">
+      <h3>Pack calculator</h3>
+      <p>How many <b id="packCellName">cells</b> it takes to build a car pack, and how far that pack goes.</p>
+      <div class="control">
+        <label for="packKWh">Pack size <output id="packKWhOut">75 kWh</output></label>
+        <input type="range" id="packKWh" min="10" max="150" step="5" value="75">
+      </div>
+      <div class="control">
+        <label for="whKm">Car uses <output id="whKmOut">165 Wh/km</output></label>
+        <input type="range" id="whKm" min="120" max="250" step="5" value="165">
+      </div>
+      <dl class="kpis">
+        <div><dt>Cells needed</dt><dd id="packCells">0</dd></div>
+        <div><dt>Cell mass</dt><dd><span id="packMass">0</span><small>kg</small></dd></div>
+        <div><dt>Est. range</dt><dd><span id="packRange">0</span><small>km</small></dd></div>
+      </dl>
+      <div class="chart" id="packBars"></div>
+      <p class="note">Cell mass only; a real pack adds cooling, wiring and a housing. Range assumes 92% of the energy is usable.</p>
+    </article>
+
+    <article class="panel">
+      <h3>Runtime</h3>
+      <p>How long the selected cell, or a whole pack, could run everyday things.</p>
+      <div class="control"><span class="lbl">Device</span><div class="seg" id="devicePick"></div></div>
+      <div class="control"><span class="lbl">Power source</span><div class="seg" id="sourcePick"></div></div>
+      <div><div class="big" id="runOut">–</div><p class="muted" id="runNote" style="margin-top:6px"></p></div>
+      <div class="chart" id="runBars"></div>
+      <p class="note">Power draws are typical averages. Assumes 92% of stored energy is usable.</p>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <p>Illustrative models built with Three.js. Real cells have many more layers than drawn here, and layer thicknesses are exaggerated so you can see them. Specs are rounded, representative values for each class of cell and vary by manufacturer.</p>
+</footer>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
